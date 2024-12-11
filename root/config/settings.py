@@ -50,14 +50,24 @@ WSGI_APPLICATION = "root.config.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
+import os
+
+from urllib.parse import urlparse
+
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+url = urlparse(DATABASE_URL)
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": "/Users/abbullah-shaker/projects/donation/db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "django_db",
+        "USER": "django_user",
+        "PASSWORD": "password",
+        "HOST": "db",
+        "PORT": "5432",
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
