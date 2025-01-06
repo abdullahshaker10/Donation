@@ -18,5 +18,8 @@ COPY . /app/
 # Expose port
 EXPOSE 8004
 
-# Command to run the Django app
-CMD ["poetry", "run", "python", "manage.py", "runserver", "0.0.0.0:8004"]
+# Copy entrypoint script
+COPY entrypoint.sh /app/entrypoint.sh
+
+# Set the entrypoint script
+ENTRYPOINT ["sh", "/app/entrypoint.sh"]

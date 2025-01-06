@@ -1,10 +1,17 @@
 from datetime import timedelta
+import os
+from dotenv import load_dotenv
 
+current_env = os.getenv("ENV", "local")
+
+if current_env == "production":
+    load_dotenv(".env.production")
+else:
+    load_dotenv(".env.local")
 SECRET_KEY = "django-insecure-$omj0zoa0fj23a866(2t61au$hexa)j(3-d9ah%s#z9k8h=lxz"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
 ALLOWED_HOSTS = []
 
 
@@ -18,6 +25,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "root.users.apps.UsersConfig",
+    "root.campaigns.apps.CampaignsConfig",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
@@ -64,11 +73,11 @@ url = urlparse(DATABASE_URL)
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "django_db",
-        "USER": "django_user",
-        "PASSWORD": "password",
-        "HOST": "db",
-        "PORT": "5432",
+        "NAME": os.getenv("POSTGRES_DB"),
+        "USER": os.getenv("POSTGRES_USER"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "HOST": os.getenv("POSTGRES_HOST"),
+        "PORT": os.getenv("POSTGRES_PORT"),
     }
 }
 
@@ -127,4 +136,13 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_LIFETIME": timedelta(days=30),
     "SLIDING_TOKEN_REFRESH_LIFETIME_LATE_USER": timedelta(days=1),
     "SLIDING_TOKEN_LIFETIME_LATE_USER": timedelta(days=30),
+}
+SHELL_PLUS = "ipython"
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': f'redis://{os.getenv("REDIS_NAME")}:{os.getenv("REDIS_PORT")}/1',  
+
+    }
 }
