@@ -8,9 +8,9 @@ echo "Applying database migrations..."
 python manage.py migrate
 
 
-# Create a superuser using the custom command
-echo "Creating superuser..."
-python manage.py create_default_super_user
+# Create Roles and Permissions
+echo "Creating Rules and Permissions..."
+python manage.py create_config_data
 
 # Start the Django development server
 echo "Starting the development server..."

@@ -12,7 +12,7 @@ class UserRoles(enum.Enum):
     )
     DONAR = "Donar", [("can_view", "Can view"), ("can_donate", "Can donate")]
     ORGANIZER = "Organizer", [("can_view", "Can view"), ("can_create", "Can create")]
-
+    INVESTOR = "Investor", [ ("can_edit_campaign", "Can Edit Campaign"),("can_create_campaign", "Can Create Campaign")]
     @classmethod
     def value_name_choices(cls):
         return [(role.value[0], role.name) for role in cls]
