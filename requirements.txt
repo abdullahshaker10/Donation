@@ -25,3 +25,6 @@ stack-data==0.6.3
 traitlets==5.14.3
 wcwidth==0.2.13
 django-redis==5.4.0
+channels==4.0.0
+channels-redis==4.1.0
+daphne==4.0.0

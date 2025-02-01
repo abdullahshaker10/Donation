@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Django App{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Basic styling for the top bar */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .top-bar {
+            background-color: #333;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .top-bar .menu {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px;
+        }
+
+        .top-bar .menu li {
+            display: inline;
+        }
+
+        .top-bar .menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 1rem;
+        }
+
+        .notification {
+            position: relative;
+            cursor: pointer;
+        }
+
+        .notification .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            padding: 5px 8px;
+            font-size: 0.8rem;
+        }
+
+        .notification i {
+            font-size: 1.5rem;
+        }
+
+        /* Add styles for notification popup */
+        .notification-popup {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+    <script>
+        // WebSocket connection setup
+        const wsScheme = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsPort = '8005';  // Daphne server port
+        const notificationSocket = new WebSocket(
+            `${wsScheme}//${window.location.hostname}:${wsPort}/notifications/ws`
+        );
+
+        function showNotification(message) {
+            // Create notification popup
+            const popup = document.createElement('div');
+            popup.className = 'notification-popup';
+            popup.textContent = message;
+            document.body.appendChild(popup);
+
+            // Show and animate
+            popup.style.display = 'block';
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                popup.style.display = 'none';
+                popup.remove();
+            }, 3000);
+        }
+
+        function updateNotificationBadge(unreadCount) {
+            const badge = document.querySelector('.notification .badge');
+
+            if (unreadCount > 0) {
+                if (badge) {
+                    badge.textContent = unreadCount;
+                } else {
+                    const newBadge = document.createElement('span');
+                    newBadge.className = 'badge';
+                    newBadge.textContent = unreadCount;
+                    document.querySelector('.notification a').appendChild(newBadge);
+                }
+            } else if (badge) {
+                badge.remove();
+            }
+        }
+
+        notificationSocket.onopen = function (e) {
+            console.log('WebSocket connection URL:', notificationSocket.url);
+            console.log('WebSocket connection established', e);
+        };
+
+        notificationSocket.onmessage = function (e) {
+            console.log('Received WebSocket message:', e.data);
+            try {
+                const data = JSON.parse(e.data);
+                console.log('Parsed message data:', data);
+
+                if (data.type === 'notification') {
+                    console.log('Processing notification:', data);
+                    showNotification(data.message);
+                    updateNotificationBadge(data.unread_count);
+                }
+            } catch (error) {
+                console.error('Error processing message:', error);
+            }
+        };
+
+        notificationSocket.onclose = function (e) {
+            console.error('WebSocket connection closed:', e);
+        };
+
+        notificationSocket.onerror = function (error) {
+            console.error('WebSocket Error:', error);
+            console.error('Connection URL:', notificationSocket.url);
+        };
+
+        // Add click handler for notification bell
+        document.addEventListener('DOMContentLoaded', function () {
+            const notificationBell = document.querySelector('.notification a');
+            notificationBell.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                // Send message to mark notifications as read
+                notificationSocket.send(JSON.stringify({
+                    'type': 'mark_read'
+                }));
+
+                // Clear the badge
+                updateNotificationBadge(0);
+            });
+        });
+    </script>
+</head>
+
+<body>
+
+    <div class="top-bar">
+        <div class="logo">MyApp</div>
+        <ul class="menu">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="#">About</a></li>
+            <li class="notification">
+                <a href="#">
+                    <i class="fa-solid fa-bell"></i>
+                    {% if unread_notifications > 0 %}
+                    <span class="badge">{{ unread_notifications }}</span>
+                    {% endif %}
+                </a>
+            </li>
+            <li><a href="#">Profile</a></li>
+        </ul>
+    </div>
+
+    <div class="content">
+        {% block content %}
+        <p>Welcome to my Django app!</p>
+        {% endblock %}
+    </div>
+
+</body>
+
+</html>

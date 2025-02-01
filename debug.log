@@ -1,0 +1,95 @@
+INFO 2025-02-01 11:47:26,616 signals New campaign created: Example Campaign
+INFO 2025-02-01 11:47:26,625 signals Got channel layer
+INFO 2025-02-01 11:47:26,634 signals Notification sent to channel layer
+INFO 2025-02-01 11:48:06,649 signals New campaign created: Example Campaign
+INFO 2025-02-01 11:48:06,650 signals Got channel layer
+INFO 2025-02-01 11:48:06,666 signals Notification sent to channel layer
+INFO 2025-02-01 11:56:40,685 signals 95491 6227881984 New campaign created: Example Campaign
+INFO 2025-02-01 11:56:40,695 signals 95491 6227881984 Got channel layer: RedisChannelLayer(hosts=[{'address': 'redis://127.0.0.1:6380'}])
+INFO 2025-02-01 11:56:40,695 signals 95491 6227881984 Sending message to channel layer: {'type': 'notification_message', 'message': 'New campaign created: Example Campaign', 'unread_count': 1}
+INFO 2025-02-01 11:56:40,708 signals 95491 6227881984 Notification sent to channel layer successfully
+INFO 2025-02-01 12:45:31,982 signals 9 281472990769568 New campaign created: Example Campaign
+INFO 2025-02-01 12:45:32,031 signals 9 281472990769568 Got channel layer: RedisChannelLayer(hosts=[{'address': 'redis://127.0.0.1:6379'}])
+INFO 2025-02-01 12:45:32,032 signals 9 281472990769568 Sending message to channel layer: {'type': 'notification_message', 'message': 'New campaign created: Example Campaign', 'unread_count': 1}
+ERROR 2025-02-01 12:45:32,033 signals 9 281472990769568 Error sending notification: Error 111 connecting to 127.0.0.1:6379. Connect call failed ('127.0.0.1', 6379).
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.10/site-packages/redis/asyncio/connection.py", line 281, in connect
+    await self.retry.call_with_retry(
+  File "/usr/local/lib/python3.10/site-packages/redis/asyncio/retry.py", line 59, in call_with_retry
+    return await do()
+  File "/usr/local/lib/python3.10/site-packages/redis/asyncio/connection.py", line 697, in _connect
+    reader, writer = await asyncio.open_connection(
+  File "/usr/local/lib/python3.10/asyncio/streams.py", line 48, in open_connection
+    transport, _ = await loop.create_connection(
+  File "/usr/local/lib/python3.10/asyncio/base_events.py", line 1076, in create_connection
+    raise exceptions[0]
+  File "/usr/local/lib/python3.10/asyncio/base_events.py", line 1060, in create_connection
+    sock = await self._connect_sock(
+  File "/usr/local/lib/python3.10/asyncio/base_events.py", line 969, in _connect_sock
+    await self.sock_connect(sock, address)
+  File "/usr/local/lib/python3.10/asyncio/selector_events.py", line 501, in sock_connect
+    return await fut
+  File "/usr/local/lib/python3.10/asyncio/selector_events.py", line 541, in _sock_connect_cb
+    raise OSError(err, f'Connect call failed {address}')
+ConnectionRefusedError: [Errno 111] Connect call failed ('127.0.0.1', 6379)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/app/./root/campaigns/signals.py", line 29, in notify_campaign_created
+    async_to_sync(channel_layer.group_send)(
+  File "/usr/local/lib/python3.10/site-packages/asgiref/sync.py", line 254, in __call__
+    return call_result.result()
+  File "/usr/local/lib/python3.10/concurrent/futures/_base.py", line 451, in result
+    return self.__get_result()
+  File "/usr/local/lib/python3.10/concurrent/futures/_base.py", line 403, in __get_result
+    raise self._exception
+  File "/usr/local/lib/python3.10/site-packages/asgiref/sync.py", line 331, in main_wrap
+    result = await self.awaitable(*args, **kwargs)
+  File "/usr/local/lib/python3.10/site-packages/channels_redis/core.py", line 523, in group_send
+    await connection.zremrangebyscore(
+  File "/usr/local/lib/python3.10/site-packages/redis/asyncio/client.py", line 611, in execute_command
+    conn = self.connection or await pool.get_connection(command_name, **options)
+  File "/usr/local/lib/python3.10/site-packages/redis/asyncio/connection.py", line 1064, in get_connection
+    await self.ensure_connection(connection)
+  File "/usr/local/lib/python3.10/site-packages/redis/asyncio/connection.py", line 1097, in ensure_connection
+    await connection.connect()
+  File "/usr/local/lib/python3.10/site-packages/redis/asyncio/connection.py", line 289, in connect
+    raise ConnectionError(self._error_message(e))
+redis.exceptions.ConnectionError: Error 111 connecting to 127.0.0.1:6379. Connect call failed ('127.0.0.1', 6379).
+INFO 2025-02-01 12:45:45,338 consumers 99263 8575367232 WebSocket disconnected with code: 1001
+INFO 2025-02-01 12:45:45,419 consumers 99263 8575367232 WebSocket connection attempt
+INFO 2025-02-01 12:45:45,419 consumers 99263 8575367232 Channel layer: RedisChannelLayer(hosts=[{'address': 'redis://127.0.0.1:6380'}])
+INFO 2025-02-01 12:45:45,428 consumers 99263 8575367232 WebSocket connection established successfully
+INFO 2025-02-01 12:47:54,741 consumers 99632 8575367232 WebSocket connection attempt
+INFO 2025-02-01 12:47:54,742 consumers 99632 8575367232 Channel layer: RedisChannelLayer(hosts=[{'address': 'redis://127.0.0.1:6380'}])
+INFO 2025-02-01 12:47:54,756 consumers 99632 8575367232 WebSocket connection established successfully
+INFO 2025-02-01 12:47:57,828 consumers 99632 8575367232 WebSocket disconnected with code: 1001
+INFO 2025-02-01 12:47:57,859 consumers 99632 8575367232 WebSocket connection attempt
+INFO 2025-02-01 12:47:57,860 consumers 99632 8575367232 Channel layer: RedisChannelLayer(hosts=[{'address': 'redis://127.0.0.1:6380'}])
+INFO 2025-02-01 12:47:57,869 consumers 99632 8575367232 WebSocket connection established successfully
+INFO 2025-02-01 12:48:05,983 signals 99637 6258356224 New campaign created: Example Campaign
+INFO 2025-02-01 12:48:05,993 signals 99637 6258356224 Got channel layer: RedisChannelLayer(hosts=[{'address': 'redis://127.0.0.1:6380'}])
+INFO 2025-02-01 12:48:05,993 signals 99637 6258356224 Sending message to channel layer: {'type': 'notification_message', 'message': 'New campaign created: Example Campaign', 'unread_count': 1}
+INFO 2025-02-01 12:48:06,010 signals 99637 6258356224 Notification sent to channel layer successfully
+INFO 2025-02-01 12:48:06,015 consumers 99632 8575367232 Received notification event: {'type': 'notification_message', 'message': 'New campaign created: Example Campaign', 'unread_count': 1}
+INFO 2025-02-01 12:48:06,020 consumers 99632 8575367232 Sending message to client: {'type': 'notification', 'message': 'New campaign created: Example Campaign', 'unread_count': 1}
+INFO 2025-02-01 12:48:06,021 consumers 99632 8575367232 Notification sent successfully
+INFO 2025-02-01 12:48:16,069 consumers 99632 8575367232 Received WebSocket message: {"type":"mark_read"}
+INFO 2025-02-01 12:48:16,071 consumers 99632 8575367232 Processing mark_read message
+INFO 2025-02-01 12:49:13,894 signals 99637 6292008960 New campaign created: Example Campaign
+INFO 2025-02-01 12:49:13,896 signals 99637 6292008960 Got channel layer: RedisChannelLayer(hosts=[{'address': 'redis://127.0.0.1:6380'}])
+INFO 2025-02-01 12:49:13,897 signals 99637 6292008960 Sending message to channel layer: {'type': 'notification_message', 'message': 'New campaign created: Example Campaign', 'unread_count': 1}
+INFO 2025-02-01 12:49:13,908 signals 99637 6292008960 Notification sent to channel layer successfully
+INFO 2025-02-01 12:49:13,911 consumers 99632 8575367232 Received notification event: {'type': 'notification_message', 'message': 'New campaign created: Example Campaign', 'unread_count': 1}
+INFO 2025-02-01 12:49:13,912 consumers 99632 8575367232 Sending message to client: {'type': 'notification', 'message': 'New campaign created: Example Campaign', 'unread_count': 1}
+INFO 2025-02-01 12:49:13,913 consumers 99632 8575367232 Notification sent successfully
+INFO 2025-02-01 12:49:21,405 signals 99637 6292008960 New campaign created: Example Campaign
+INFO 2025-02-01 12:49:21,406 signals 99637 6292008960 Got channel layer: RedisChannelLayer(hosts=[{'address': 'redis://127.0.0.1:6380'}])
+INFO 2025-02-01 12:49:21,407 signals 99637 6292008960 Sending message to channel layer: {'type': 'notification_message', 'message': 'New campaign created: Example Campaign', 'unread_count': 1}
+INFO 2025-02-01 12:49:21,416 signals 99637 6292008960 Notification sent to channel layer successfully
+INFO 2025-02-01 12:49:21,417 consumers 99632 8575367232 Received notification event: {'type': 'notification_message', 'message': 'New campaign created: Example Campaign', 'unread_count': 1}
+INFO 2025-02-01 12:49:21,417 consumers 99632 8575367232 Sending message to client: {'type': 'notification', 'message': 'New campaign created: Example Campaign', 'unread_count': 1}
+INFO 2025-02-01 12:49:21,418 consumers 99632 8575367232 Notification sent successfully
+INFO 2025-02-01 12:49:42,988 consumers 99632 8575367232 Received WebSocket message: {"type":"mark_read"}
+INFO 2025-02-01 12:49:42,990 consumers 99632 8575367232 Processing mark_read message
