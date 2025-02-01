@@ -1,6 +1,7 @@
 from datetime import timedelta
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
 current_env = os.getenv("ENV", "local")
 
@@ -24,7 +25,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "channels",
     "root.users.apps.UsersConfig",
+    "root.home.apps.HomeConfig",
+    "root.notifications.apps.NotificationsConfig",
     "root.campaigns.apps.CampaignsConfig",
     "django_extensions",
 ]
@@ -145,4 +149,75 @@ CACHES = {
         'LOCATION': f'redis://{os.getenv("REDIS_NAME")}:{os.getenv("REDIS_PORT")}/1',  
 
     }
+}
+BASE_DIR = Path(__file__).resolve().parent.parent
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [BASE_DIR / 'templates'],  # Look for templates here
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
+ASGI_APPLICATION = 'root.config.asgi.application'
+
+# Redis channel layer configuration for message passing
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [f"redis://127.0.0.1:{os.getenv('REDIS_PORT', '6380')}"],
+        },
+    },
+}
+
+# Add this to your settings.py
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'root.notifications': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'root.campaigns': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'channels': {  # Add logging for channels
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
 }

@@ -12,6 +12,6 @@ python manage.py migrate
 echo "Creating Rules and Permissions..."
 python manage.py create_config_data
 
-# Start the Django development server
-echo "Starting the development server..."
-python manage.py runserver 0.0.0.0:8004
+# Start the Daphne server
+echo "Starting the Daphne server..."
+daphne -b 0.0.0.0 -p 8004 root.config.asgi:application
