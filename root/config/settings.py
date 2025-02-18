@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     "root.home.apps.HomeConfig",
     "root.notifications.apps.NotificationsConfig",
     "root.campaigns.apps.CampaignsConfig",
+    "root.donations.apps.DonationsConfig",
     "django_extensions",
 ]
 
@@ -82,6 +83,8 @@ DATABASES = {
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
         "HOST": os.getenv("POSTGRES_HOST"),
         "PORT": os.getenv("POSTGRES_PORT"),
+                "ATOMIC_REQUESTS": True,
+
     }
 }
 
