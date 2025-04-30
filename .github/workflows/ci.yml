@@ -25,11 +25,18 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Verify pyproject.toml exists
+        run: |
+          if [ ! -f "$GITHUB_WORKSPACE/pyproject.toml" ]; then
+            echo "Error: pyproject.toml not found at $GITHUB_WORKSPACE/pyproject.toml"
+            exit 1
+          fi
+
       - name: Check formatting with black
-        run: black . --check
+        run: black . --config $GITHUB_WORKSPACE/pyproject.toml --check
 
       - name: Check import sorting with isort
-        run: isort . --check-only
+        run: isort . --settings-file $GITHUB_WORKSPACE/pyproject.toml --check-only
 
   lint:
     name: Lint Check
@@ -49,8 +56,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Verify pyproject.toml exists
+        run: |
+          if [ ! -f "$GITHUB_WORKSPACE/pyproject.toml" ]; then
+            echo "Error: pyproject.toml not found at $GITHUB_WORKSPACE/pyproject.toml"
+            exit 1
+          fi
+
       - name: Run flake8
-        run: flake8 .
+        run: flake8 . --config $GITHUB_WORKSPACE/pyproject.toml
 
   tests:
     name: Tests
@@ -115,7 +129,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install bandit
+
+      - name: Verify pyproject.toml exists
+        run: |
+          if [ ! -f "$GITHUB_WORKSPACE/pyproject.toml" ]; then
+            echo "Error: pyproject.toml not found at $GITHUB_WORKSPACE/pyproject.toml"
+            exit 1
+          fi
 
       - name: Run security checks with bandit
-        run: bandit -r .
+        run: bandit -c $GITHUB_WORKSPACE/pyproject.toml -r .
