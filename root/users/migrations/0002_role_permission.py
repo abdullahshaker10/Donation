@@ -6,26 +6,79 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Role',
+            name="Role",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(choices=[('Admin', 'ADMIN'), ('Donar', 'DONAR'), ('Organizer', 'ORGANIZER')], max_length=255)),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='role', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        choices=[
+                            ("Admin", "ADMIN"),
+                            ("Donar", "DONAR"),
+                            ("Organizer", "ORGANIZER"),
+                        ],
+                        max_length=255,
+                    ),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="role",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Permission',
+            name="Permission",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(choices=[('can_view', 'Can view'), ('can_edit', 'Can edit'), ('can_delete', 'Can delete'), ('can_view', 'Can view'), ('can_donate', 'Can donate'), ('can_view', 'Can view'), ('can_create', 'Can create')], max_length=255)),
-                ('role', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='permissions', to='users.role')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        choices=[
+                            ("can_view", "Can view"),
+                            ("can_edit", "Can edit"),
+                            ("can_delete", "Can delete"),
+                            ("can_view", "Can view"),
+                            ("can_donate", "Can donate"),
+                            ("can_view", "Can view"),
+                            ("can_create", "Can create"),
+                        ],
+                        max_length=255,
+                    ),
+                ),
+                (
+                    "role",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="permissions",
+                        to="users.role",
+                    ),
+                ),
             ],
         ),
     ]

@@ -1,0 +1,141 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [master,]
+  push:
+    branches: [master,]
+
+jobs:
+  format:
+    name: Format Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Verify pyproject.toml exists
+        run: |
+          if [ ! -f "$GITHUB_WORKSPACE/pyproject.toml" ]; then
+            echo "Error: pyproject.toml not found at $GITHUB_WORKSPACE/pyproject.toml"
+            exit 1
+          fi
+
+      - name: Check formatting with black
+        run: black . --config $GITHUB_WORKSPACE/pyproject.toml --check
+
+      - name: Check import sorting with isort
+        run: isort . --settings-file $GITHUB_WORKSPACE/pyproject.toml --check-only
+
+  lint:
+    name: Lint Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Verify pyproject.toml exists
+        run: |
+          if [ ! -f "$GITHUB_WORKSPACE/pyproject.toml" ]; then
+            echo "Error: pyproject.toml not found at $GITHUB_WORKSPACE/pyproject.toml"
+            exit 1
+          fi
+
+      - name: Run flake8
+        run: flake8 . --config $GITHUB_WORKSPACE/pyproject.toml
+
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run tests
+        run: python manage.py test
+
+  coverage:
+    name: Coverage
+    needs: tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Generate coverage report
+        run: |
+          coverage run --source='.' manage.py test
+          coverage report -m
+          coverage xml
+
+  security:
+    name: Security Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Verify pyproject.toml exists
+        run: |
+          if [ ! -f "$GITHUB_WORKSPACE/pyproject.toml" ]; then
+            echo "Error: pyproject.toml not found at $GITHUB_WORKSPACE/pyproject.toml"
+            exit 1
+          fi
+
+      - name: Run security checks with bandit
+        run: bandit -c $GITHUB_WORKSPACE/pyproject.toml -r .

@@ -28,3 +28,9 @@ django-redis==5.4.0
 channels==4.0.0
 channels-redis==4.1.0
 daphne==4.0.0
+coverage==7.4.1
+black==24.1.1
+isort==5.13.2
+bandit==1.7.7
+flake8==7.0.0
+pre-commit==3.6.0
